@@ -13,7 +13,7 @@ app.get('/', function (req, res){
 	res.send('Todo API Root');
 });
 
-// GET /todos?completed=true
+// GET /todos?completed=false&q=work
 app.get('/todos', function (req, res){
 	var queryParams = req.query;
 	var filteredTodos = todos;
@@ -24,6 +24,19 @@ app.get('/todos', function (req, res){
 		//res.status(404).send();
 		filteredTodos = _.where(filteredTodos, {completed: false});
 	}	
+	/*
+	if (queryParams.hasOwnProperty('q') && queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
+		//"Go to work on Saturday".indexOf('work')
+		filteredTodos = _.filter(filteredTodos, function (todo) {
+			return todo.description.indexOf(queryParams.q) !== -1;
+		}); 
+	}
+	*/
+	if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0) {
+		filteredTodos = _.filter(filteredTodos, function (todo) {
+			return todo.description.toLowerCase().indexOf(queryParams.q.toLowerCase()) > -1;
+		}); 
+	}
 
 	res.json(filteredTodos);
 });
