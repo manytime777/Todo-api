@@ -74,7 +74,12 @@ app.post('/todos', middleware.requireAuthentication, function (req, res) {
 	//	respond with 200 and todo
 	//	e res.status(400).json(e)
 	db.todo.create(body).then(function (todo) {
-		res.json(todo.toJSON());
+		//res.json(todo.toJSON());
+		req.user.addTodo(todo).then(function () {
+			return todo.reload();
+		}).then(function (todo) {
+			res.json(todo.toJSON());
+		});
 	}, function (e) {
 		res.status(400).json(e);
 	});
